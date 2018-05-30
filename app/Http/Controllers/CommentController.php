@@ -30,4 +30,16 @@ class CommentController extends Controller
         return redirect()->back();
     }
 
+    public function destroy($id)
+    {
+        try {
+            $comment = Comment::findorFail($id);
+            $comment->delete();
+            Session()->flash('flash_message', '备注已成功删除');
+        } catch (\Illuminate\Database\QueryException $e) {
+            Session()->flash('flash_message_warning', '备注删除无法删除');
+        }
+        return redirect()->back();
+    }
+
 }

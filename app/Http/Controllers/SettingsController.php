@@ -47,7 +47,7 @@ class SettingsController extends Controller
     public function updateOverall(UpdateSettingOverallRequest $request)
     {
         $this->settings->updateOverall($request);
-        Session::flash('flash_message', 'Overall settings successfully updated');
+        Session::flash('flash_message', '成功更新全局设置');
         return redirect()->back();
     }
 
@@ -58,7 +58,7 @@ class SettingsController extends Controller
     public function permissionsUpdate(Request $request)
     {
         $this->roles->permissionsUpdate($request);
-        Session::flash('flash_message', 'Role is updated');
+        Session::flash('flash_message', '级别权限已更新');
         return redirect()->back();
     }
 }

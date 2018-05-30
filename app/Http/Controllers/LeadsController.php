@@ -55,9 +55,17 @@ class LeadsController extends Controller
      */
     public function anyData()
     {
+       
+        if ((!auth()->user()->hasRole('administrator'))&(!auth()->user()->hasRole('manager'))){
+            $user_id=auth()->user()->id;
         $leads = Lead::select(
-            ['id', 'title', 'user_created_id', 'client_id', 'user_assigned_id', 'contact_date']
-        )->where('status', 1)->get();
+            ['id', 'title', 'user_created_id', 'client_id', 'user_assigned_id', 'contact_date','status']
+        )->where('user_assigned_id',$user_id);
+        }
+        else $leads = Lead::select(
+            ['id', 'title', 'user_created_id', 'client_id', 'user_assigned_id', 'contact_date','status']
+        );
+        
         return Datatables::of($leads)
             ->addColumn('titlelink', function ($leads) {
                 return '<a href="leads/' . $leads->id . '" ">' . $leads->title . '</a>';
@@ -71,7 +79,32 @@ class LeadsController extends Controller
             })
             ->editColumn('user_assigned_id', function ($leads) {
                 return $leads->user->name;
-            })->make(true);
+            })
+            ->editColumn('status', function ($leads) {
+                switch ($leads->status){
+                    case '1':
+                        return '<span class="label label-primary">咨询中</span>';
+                        break;
+                    case '2':
+                        return '<span class="label label-success">已完成</span>';
+                        break;
+                    case '3':
+                        return '<span class="label label-danger">无兴趣</span>';
+                        break;
+                }
+
+            })
+            ->addColumn('edit', function ($lead) {
+                return '<a href="leads/' .$lead->id . '" class="btn btn-success"> Edit</a>';
+            })
+            ->add_column('delete', '
+                <form action="{{ route(\'leads.destroy\', $id) }}" method="POST">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="submit" name="submit" value="Delete" class="btn btn-danger" onClick="return confirm(\'你确定要彻底删除该条咨询吗（不可恢复）?\')"">
+
+            {{csrf_field()}}
+            </form>')
+            ->make(true);
     }
 
     /**
@@ -102,7 +135,7 @@ class LeadsController extends Controller
     public function updateAssign($id, Request $request)
     {
         $this->leads->updateAssign($id, $request);
-        Session()->flash('flash_message', 'New user is assigned');
+        Session()->flash('flash_message', '成功重新分配顾问');
         return redirect()->back();
     }
 
@@ -115,7 +148,7 @@ class LeadsController extends Controller
     public function updateFollowup(UpdateLeadFollowUpRequest $request, $id)
     {
         $this->leads->updateFollowup($id, $request);
-        Session()->flash('flash_message', 'New follow up date is set');
+        Session()->flash('flash_message', '下一次跟进已更新');
         return redirect()->back();
     }
 
@@ -127,10 +160,18 @@ class LeadsController extends Controller
      */
     public function show($id)
     {
+        if(Lead::find($id)){
         return view('leads.show')
             ->withLead($this->leads->find($id))
             ->withUsers($this->users->getAllUsersWithDepartments())
             ->withCompanyname($this->settings->getCompanyName());
+        }
+        else 
+        {
+            Session()->flash('flash_message_warning', '该条咨询不存在或已删除');
+            return redirect()->back();
+        
+        }
     }
 
     /**
@@ -142,7 +183,14 @@ class LeadsController extends Controller
     public function updateStatus($id, Request $request)
     {
         $this->leads->updateStatus($id, $request);
-        Session()->flash('flash_message', 'Lead is completed');
+        Session()->flash('flash_message', '咨询状态已更新');
         return redirect()->back();
+    }
+
+    public function destroy($id)
+    {
+        $this->laedss->destroy($id);
+
+        return redirect()->route('leads.index');
     }
 }

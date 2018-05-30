@@ -26,7 +26,7 @@ class IsTaskAssigned
             return $next($request);
         }
         if ($settingscomplete == 1  && Auth()->user()->id != $task->fk_user_id_assign) {
-            Session()->flash('flash_message_warning', 'Only assigned user are allowed to do this');
+            Session()->flash('flash_message_warning', '您没有权限。');
             return redirect()->back();
         }
         return $next($request);

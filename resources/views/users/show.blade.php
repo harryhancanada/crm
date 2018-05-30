@@ -3,56 +3,59 @@
     @include('partials.userheader')
 <div class="col-sm-8">
   <el-tabs active-name="tasks" style="width:100%">
-    <el-tab-pane label="Tasks" name="tasks">
+    <el-tab-pane label="申请" name="tasks">
         <table class="table table-hover" id="tasks-table">
-        <h3>{{ __('Tasks assigned') }}</h3>
+        <h3>{{ __('所负责的申请') }}</h3>
             <thead>
-                    <th>{{ __('Title') }}</th>
-                    <th>{{ __('Client') }}</th>
-                    <th>{{ __('Created at') }}</th>
-                    <th>{{ __('Deadline') }}</th>
+                    <th>{{ __('申请名称') }}</th>
+                    <th>{{ __('学生姓名') }}</th>
+                    <th>{{ __('创建时间') }}</th>
+                    <th>{{ __('截止时间') }}</th>
                     <th>
                         <select name="status" id="status-task">
-                        <option value="" disabled selected>{{ __('Status') }}</option>
-                            <option value="open">Open</option>
-                            <option value="closed">Closed</option>
-                            <option value="all">All</option>
+                        <option value="" disabled selected>{{ __('申请状态') }}</option>
+                            <option value="open">进行中</option>
+                            <option value="closed">完成</option>
+                            <option value="pause">暂停</option>
+                            <option value="abandoned">无效</option>
+                            <option value="all">所有</option>
                         </select>
                     </th>
                 </tr>
             </thead>
         </table>
     </el-tab-pane>
-    <el-tab-pane label="Leads" name="leads">
+    <el-tab-pane label="咨询" name="leads">
       <table class="table table-hover">
         <table class="table table-hover" id="leads-table">
-                <h3>{{ __('Leads assigned') }}</h3>
+                <h3>{{ __('所负责的咨询') }}</h3>
                 <thead>
                 <tr>
-                    <th>{{ __('Title') }}</th>
-                    <th>{{ __('Client') }}</th>
-                    <th>{{ __('Created at') }}</th>
-                    <th>{{ __('Deadline') }}</th>
+                    <th>{{ __('咨询名称') }}</th>
+                    <th>{{ __('学生姓名') }}</th>
+                    <th>{{ __('创建时间') }}</th>
+                    <th>{{ __('截止时间') }}</th>
                     <th>
                         <select name="status" id="status-lead">
-                        <option value="" disabled selected>{{ __('Status') }}</option>
-                            <option value="open">Open</option>
-                            <option value="closed">Closed</option>
-                            <option value="all">All</option>
+                        <option value="" disabled selected>{{ __('咨询状态') }}</option>
+                            <option value="open">咨询中</option>
+                            <option value="closed">已完成</option>
+                            <option value="not interested">无兴趣</option>
+                            <option value="all">所有</option>
                         </select>
                     </th>
                 </tr>
                 </thead>
             </table>
     </el-tab-pane>
-    <el-tab-pane label="Clients" name="clients">
+    <el-tab-pane label="学生" name="clients">
          <table class="table table-hover" id="clients-table">
-                <h3>{{ __('Clients assigned') }}</h3>
+                <h3>{{ __('所负责的学生') }}</h3>
                 <thead>
                 <tr>
-                    <th>{{ __('Name') }}</th>
-                    <th>{{ __('Company') }}</th>
-                    <th>{{ __('Primary number') }}</th>
+                    <th>{{ __('学生姓名') }}</th>
+                    <th>{{ __('所在学校') }}</th>
+                    <th>{{ __('联系电话') }}</th>
                 </tr>
                 </thead>
             </table>
@@ -60,9 +63,9 @@
   </el-tabs>
   </div>
   <div class="col-sm-4">
-  <h4>{{ __('Tasks') }}</h4>
+  <h4>{{ __('申请概览') }}</h4>
 <doughnut :statistics="{{$task_statistics}}"></doughnut>
-<h4>{{ __('Leads') }}</h4>
+<h4>{{ __('咨询概览') }}</h4>
 <doughnut :statistics="{{$lead_statistics}}"></doughnut>
   </div>
 
@@ -98,7 +101,15 @@
                         table.columns(4).search(1).draw();
                     } else if(selected == 'closed') {
                         table.columns(4).search(2).draw();
-                    } else {
+                    }
+                    else if(selected == 'pause') {
+                        table.columns(4).search(4).draw();
+                    }
+                    else if(selected == 'abandoned') {
+                        table.columns(4).search(3).draw();
+                    }
+
+                    else {
                          table.columns(4).search( '' ).draw();
                     }
               });  
@@ -140,7 +151,11 @@
                         table.columns(4).search(1).draw();
                     } else if(selected == 'closed') {
                         table.columns(4).search(2).draw();
-                    } else {
+                    }
+                    else if(selected == 'not interested') {
+                        table.columns(4).search(3).draw();
+                    }
+                    else {
                          table.columns(4).search( '' ).draw();
                     }
               });  

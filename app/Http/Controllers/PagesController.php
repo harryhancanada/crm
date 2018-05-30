@@ -48,6 +48,7 @@ class PagesController extends Controller
         $users = $this->users->getAllUsers();
         $totalClients = $this->clients->getAllClientsCount();
         $totalTimeSpent = $this->tasks->totalTimeSpent();
+        $incomeThisMonth = $this->tasks->incomeThisMonth();
 
      /**
       * Statistics for all-time tasks.
@@ -126,7 +127,8 @@ class PagesController extends Controller
             'totalPercentageTasks',
             'allleads',
             'allCompletedLeads',
-            'totalPercentageLeads'
+            'totalPercentageLeads',
+            'incomeThisMonth'
         ));
     }
 }

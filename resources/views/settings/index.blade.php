@@ -1,9 +1,12 @@
 @extends('layouts.master')
 @section('heading')
-    <h1>{{ __('Settings') }}</h1>
+    <div class="panel panel-primary shadow  " >
+        <div class="panel-heading">
+            <h1>{{ __('级别权限设置') }}</h1></div></div>
 @stop
 @section('content')
     <div class="row">
+
     <div class="col-lg-12">
         
     </div>
@@ -55,13 +58,15 @@
      {!! Form::close() !!}
      </div>
      @endforeach
-</div>
+        </div>
 
 
 
     <div class="row">
         <div class="col-lg-12">
-            <div class="sidebarheader movedown"><p>{{ __('Overall Settings') }}</p></div>
+            <div class="panel panel-primary shadow  " >
+                <div class="panel-heading">
+                    <h1>{{ __('全局设置') }}</h1></div></div>
 
 
             {!! Form::model($settings, [

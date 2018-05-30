@@ -64,25 +64,41 @@ class TaskActionNotification extends Notification
     {
         switch ($this->action) {
             case 'created':
-                $text = __(':title was created by :creator, and assigned to you', [
+                $text = __('< :title > 由 < :creator > 建立, 并且分配给你', [
                     'title' =>  $this->task->title,
                     'creator' => $this->task->creator->name,
                     ]);
                 break;
             case 'updated_status':
-                $text = __(':title was completed by :username', [
+
+            switch($this->task->status) {
+                case '1':
+                    $status1='进行中';
+                    break;
+                case '2':
+                    $status1='已完成';
+                    break;
+                case '3':
+                    $status1='无效';
+                    break;
+                case '4':
+                    $status1 ='暂停';
+                    break;
+            }
+                $text = __('申请 < :title > 的状态被 :username 更改成 < :status >', [
                     'title' =>  $this->task->title,
                     'username' =>  Auth()->user()->name,
+                    'status' =>  $status1,
                     ]);
                 break;
             case 'updated_time':
-                $text = __(':username inserted a new time for :title', [
+                $text = __('< :username > 给 申请 < :title > 添加了一条新的进度', [
                     'title' =>  $this->task->title,
                     'username' =>  Auth()->user()->name,
                     ]);
                 break;
             case 'updated_assign':
-                $text = __(':username assigned a task to you', [
+                $text = __(':username 给你分配了一个新申请任务。', [
                     'title' =>  $this->task->title,
                     'username' =>  Auth()->user()->name,
                     ]);

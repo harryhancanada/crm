@@ -6,7 +6,9 @@ use Validator;
 use DB;
 use Storage;
 use File;
+use App\Repositories\User\UserRepositoryContract;
 use App\Http\Requests;
+use App\Models\User;
 use App\Models\Setting;
 use App\Models\Document;
 use Illuminate\Http\Request;
@@ -20,8 +22,6 @@ class DocumentsController extends Controller
      * @param $id
      * @return mixed
      */
-
-
 
 
     public function upload(Request $request, $id)
@@ -40,7 +40,7 @@ class DocumentsController extends Controller
         $mbsize = $size / 1048576;
         $totaltsize = substr($mbsize, 0, 4);
         if ($totaltsize > 15) {
-            Session::flash('flash_message', 'File Size can not be bigger then 15MB');
+            Session::flash('flash_message', '文件大小不能超过 15MB');
             return redirect()->back();
         }
         $input = array_replace(
@@ -48,7 +48,9 @@ class DocumentsController extends Controller
             ['path' => "$filename", 'size' => "$totaltsize", 'file_display' => "$fileOrginal", 'client_id' => $id]
         );
         $document = Document::create($input);
-        Session::flash('flash_message', 'File successfully uploaded');
+        Session::flash('flash_message', '文件成功上传(刷新后出现)');
+        return redirect()->route('clients.index');
+
     }
     /**
      * @param Request $request
@@ -69,7 +71,7 @@ class DocumentsController extends Controller
                 Excel::load('public\imports\contacts.xlsx', function ($reader) {
                     foreach ($reader->toArray() as $row) {
                         if ($row['name'] && $row['company'] && $row['email'] && $row['user'] == "") {
-                            Session::flash('flash_message_warning', 'Required fields are empty');
+                            Session::flash('flash_message_warning', '您未填写必要信息');
                         }
                     }
                 });
@@ -83,6 +85,7 @@ class DocumentsController extends Controller
     }
    public function destroy($id)
 	{
+       try {
     	$document=Document::find($id);
     	$settings = Setting::findOrFail(1);
     	$companyname = $settings->company;
@@ -90,7 +93,10 @@ class DocumentsController extends Controller
     	$destroy_path = (public_path() . '/files/' . $companyname .'/' . $path);
     	File::delete(public_path() . '/files/' . $companyname .'/' . $path);
     	$document->delete();
-    	Session()->flash('flash_message', 'File has been deleted');
-    	return redirect()->back();
+    	Session()->flash('flash_message', '该文件已彻底删除');
+        } catch (\Illuminate\Database\QueryException $e) {
+            Session()->flash('flash_message_warning', '');
+        }
+        return redirect()->back();
 	}
     }

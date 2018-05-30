@@ -1,16 +1,21 @@
 @extends('layouts.master')
 
 @section('content')
+
+
     <div class="col-lg-12 currenttask">
 
         <table class="table table-hover">
-            <h3>{{ __('All Roles') }}</h3>
+            <div class="panel panel-primary shadow  " >
+                <div class="panel-heading">
+            <h3>{{ __('权限设置') }}</h3>
+                </div></div>
             <thead>
             <thead>
             <tr>
-                <th>{{ __('Name') }}</th>
-                <th>{{ __('Description') }}</th>
-                <th>{{ __('Action') }}</th>
+                <th>{{ __('级别名称') }}</th>
+                <th>{{ __('级别说明') }}</th>
+                <th>{{ __('操作') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -33,10 +38,11 @@
             @endforeach
 
             </tbody>
+
         </table>
 
         <a href="{{ route('roles.create')}}">
-            <button class="btn btn-success">{{ __('Add new Role') }}e</button>
+            <button class="btn btn-success">{{ __('新增权限级别') }}</button>
         </a>
 
     </div>

@@ -58,6 +58,10 @@ class ClientRepository implements ClientRepositoryContract
     {
         return Industry::pluck('name', 'id');
     }
+    public function getIndustries($industry_id)
+    {
+        return Industry::find($industry_id)->name;
+    }
 
     /**
      * @param $requestData
@@ -65,7 +69,7 @@ class ClientRepository implements ClientRepositoryContract
     public function create($requestData)
     {
         $client = Client::create($requestData);
-        Session()->flash('flash_message', 'Client successfully added');
+        Session()->flash('flash_message', '成功添加学生！');
         event(new \App\Events\ClientAction($client, self::CREATED));
     }
 
@@ -87,9 +91,9 @@ class ClientRepository implements ClientRepositoryContract
         try {
             $client = Client::findorFail($id);
             $client->delete();
-            Session()->flash('flash_message', 'Client successfully deleted');
+            Session()->flash('flash_message', '成功删除学生！');
         } catch (\Illuminate\Database\QueryException $e) {
-            Session()->flash('flash_message_warning', 'Client can NOT have, leads, or tasks assigned when deleted');
+            Session()->flash('flash_message_warning', '学生还有申请和咨询，不能删除。');
         }
     }
 

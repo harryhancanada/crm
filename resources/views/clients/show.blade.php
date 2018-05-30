@@ -26,10 +26,10 @@
     <div class="row">
         <div class="col-md-8 currenttask">
             <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" href="#task">{{__('Tasks')}}</a></li>
-                <li><a data-toggle="tab" href="#lead">{{__('Leads')}}</a></li>
-                <li><a data-toggle="tab" href="#document">{{__('Documents')}}</a></li>
-                <li><a data-toggle="tab" href="#invoice">{{__('Invoices')}}</a></li>
+                <li class="active"><a data-toggle="tab" href="#task">{{__('申请')}}</a></li>
+                <li><a data-toggle="tab" href="#lead">{{__('咨询')}}</a></li>
+                <li><a data-toggle="tab" href="#document">{{__('档案')}}</a></li>
+                <li><a data-toggle="tab" href="#invoice">{{__('缴费记录')}}</a></li>
 
             </ul>
             <div class="tab-content">
@@ -46,7 +46,7 @@
                 'url' => ['clients/updateassign', $client->id],
                 ]) !!}
                 {!! Form::select('user_assigned_id', $users, $client->user->id, ['class' => 'form-control ui search selection top right pointing search-select', 'id' => 'search-select']) !!}
-                {!! Form::submit(__('Assign new user'), ['class' => 'btn btn-primary form-control closebtn']) !!}
+                {!! Form::submit(__('更改所属顾问'), ['class' => 'btn btn-primary form-control closebtn']) !!}
                 {!! Form::close() !!}
     </div>
     </div>

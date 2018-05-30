@@ -56,10 +56,16 @@ class TasksController extends Controller
 
     public function anyData()
     {
+        if ((!auth()->user()->hasRole('administrator'))&(!auth()->user()->hasRole('manager'))){
+            $user_id=auth()->user()->id;
         $tasks = Task::select(
-            ['id', 'title', 'created_at', 'deadline', 'user_assigned_id']
-        )
-            ->where('status', 1)->get();
+            ['id', 'title', 'created_at', 'deadline', 'user_assigned_id', 'status']
+        )->where('user_assigned_id',$user_id);
+        }
+        else $tasks = Task::select(
+            ['id', 'title', 'created_at', 'deadline', 'user_assigned_id', 'status']
+        );
+            //->where('status', 1)->get();
         return Datatables::of($tasks)
             ->addColumn('titlelink', function ($tasks) {
                 return '<a href="tasks/' . $tasks->id . '" ">' . $tasks->title . '</a>';
@@ -74,7 +80,36 @@ class TasksController extends Controller
             })
             ->editColumn('user_assigned_id', function ($tasks) {
                 return $tasks->user->name;
-            })->make(true);
+            })
+            ->editColumn('status', function ($tasks) {
+                switch ($tasks->status){
+                    case '1':
+                        return '<span class="label label-primary">进行中</span>';
+                        break;
+                    case '2':
+                        return '<span class="label label-success">已完成</span>';
+                        break;
+                    case '3':
+                        return '<span class="label label-danger">无效</span>';
+                        break;
+                    case '4':
+                        return '<span class="label label-warning">暂停中</span>';
+                        break;
+
+                }
+
+            })
+            ->addColumn('edit', function ($tasks) {
+                return '<a href="' . route("tasks.show", $tasks->id) . '" class="btn btn-success"> Edit</a>';
+            })
+            ->add_column('delete', '
+                <form action="{{ route(\'tasks.destroy\', $id) }}" method="POST">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="submit" name="submit" value="Delete" class="btn btn-danger" onClick="return confirm(\'你确定要删除该条申请吗（不可恢复）？\')"">
+
+            {{csrf_field()}}
+            </form>')
+            ->make(true);
     }
 
 
@@ -109,11 +144,20 @@ class TasksController extends Controller
      */
     public function show(Request $request, $id)
     {
+        if(Task::find($id)){
         return view('tasks.show')
             ->withTasks($this->tasks->find($id))
             ->withUsers($this->users->getAllUsersWithDepartments())
             ->withInvoiceLines($this->tasks->getInvoiceLines($id))
             ->withCompanyname($this->settings->getCompanyName());
+        
+        }
+        else 
+        {
+            Session()->flash('flash_message_warning', '该条申请不存在或已删除');
+            return redirect()->back();
+        
+        }
     }
 
 
@@ -131,9 +175,10 @@ class TasksController extends Controller
     public function updateStatus($id, Request $request)
     {
         $this->tasks->updateStatus($id, $request);
-        Session()->flash('flash_message', 'Task is completed');
+        Session()->flash('flash_message', '状态已改变');
         return redirect()->back();
     }
+
 
     /**
      * @param $id
@@ -146,7 +191,7 @@ class TasksController extends Controller
 
 
         $this->tasks->updateAssign($id, $request);
-        Session()->flash('flash_message', 'New user is assigned');
+        Session()->flash('flash_message', '顾问已更改');
         return redirect()->back();
     }
 
@@ -191,5 +236,12 @@ class TasksController extends Controller
     {
         Notifynder::readAll(\Auth::id());
         return redirect()->back();
+    }
+
+    public function destroy($id)
+    {
+        $this->tasks->destroy($id);
+
+        return redirect()->route('tasks.index');
     }
 }

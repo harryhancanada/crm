@@ -45,7 +45,7 @@ class DepartmentsController extends Controller
     public function store(StoreDepartmentRequest $request)
     {
         $this->departments->create($request);
-        Session::flash('flash_message', 'Successfully created New Department');
+        Session::flash('flash_message', '成功新建新部门');
         return redirect()->route('departments.index');
     }
 

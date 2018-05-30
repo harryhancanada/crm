@@ -33,12 +33,12 @@
                             @endforeach
                         </h3>
 
-                        <p>{{ __('Tasks completed this month') }}</p>
+                        <p>{{ __('本月申请完成量') }}</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-ios-book-outline"></i>
                     </div>
-                    <a href="{{route('tasks.index')}}" class="small-box-footer">{{ __('All Tasks') }} <i
+                    <a href="{{route('tasks.index')}}" class="small-box-footer">{{ __('所有的申请') }} <i
                                 class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
@@ -53,12 +53,12 @@
                             @endforeach
                         </h3>
 
-                        <p>{{ __('Leads completed this month') }}</p>
+                        <p>{{ __('本月咨询完成量') }}</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-stats-bars"></i>
                     </div>
-                    <a href="{{route('leads.index')}}" class="small-box-footer">{{ __('All Leads') }} <i
+                    <a href="{{route('leads.index')}}" class="small-box-footer">{{ __('所有的咨询') }} <i
                                 class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
@@ -69,12 +69,12 @@
                     <div class="inner">
                         <h3>{{$totalClients}}</h3>
 
-                        <p>{{ __('All Clients') }}</p>
+                        <p>{{ __('所有客户') }}</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-person"></i>
                     </div>
-                    <a href="{{route('clients.index')}}" class="small-box-footer">{{ __('All clients') }} <i
+                    <a href="{{route('clients.index')}}" class="small-box-footer">{{ __('所有客户数量') }} <i
                                 class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
@@ -83,21 +83,21 @@
                 <!-- small box -->
                 <div class="small-box bg-red">
                     <div class="inner">
-                        <h3>
-                            @foreach($totalTimeSpent[0] as $sum => $value)
-
+                        <h3>$
+                            @foreach($incomeThisMonth[0] as $sum =>$value)
                                 {{$value}}
                             @endforeach
-                            @if($value == "")
-                                0
-                            @endif</h3>
+                                @if($value == "")
+                                    0
+                                @endif
+                         </h3>
 
-                        <p>{{ __('Total hours registered') }}</p>
+                        <p>{{ __('本月总收入') }}</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-pie-graph"></i>
                     </div>
-                    <a href="#" class="small-box-footer"> {{ __('More info') }} <i
+                    <a href="#" class="small-box-footer"> {{ __('更多信息') }} <i
                                 class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>

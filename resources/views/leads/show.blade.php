@@ -22,23 +22,25 @@
             @include('partials.comments', ['subject' => $lead])
         </div>
         <div class="col-md-3">
-            <div class="sidebarheader">
-                <p> {{ __('Lead information') }}</p>
-            </div>
+            <div class="panel panel-primary shadow">
+                <div class="panel-heading">
+                <p> {{ __('咨询记录') }}</p>
+                </div>
+                <div class="panel-body">
             <div class="sidebarbox">
-                <p>{{ __('Assigned to') }}:
-                    <a href="{{route('leads.show', $lead->user->id)}}">
+                <p>{{ __('所属顾问') }}:
+                    <a href="{{route('users.show', $lead->user->id)}}">
                         {{$lead->user->name}}</a></p>
-                <p>{{ __('Created at') }}: {{ date('d F, Y, H:i', strtotime($lead->created_at))}} </p>
+                <p>{{ __('建立时间') }}: {{ date('d F, Y, H:i', strtotime($lead->created_at))}} </p>
                 @if($lead->days_until_contact < 2)
-                    <p>{{ __('Follow up') }}: <span style="color:red;">{{date('d, F Y, H:i', strTotime($lead->contact_date))}}
+                    <p>{{ __('下一次跟进时间') }}: <span style="color:red;">{{date('d, F Y, H:i', strTotime($lead->contact_date))}}
 
                             @if($lead->status == 1) ({!! $lead->days_until_contact !!}) @endif</span> <i
                                 class="glyphicon glyphicon-calendar" data-toggle="modal"
                                 data-target="#ModalFollowUp"></i></p> <!--Remove days left if lead is completed-->
 
                 @else
-                    <p>{{ __('Follow up') }}: <span style="color:green;">{{date('d, F Y, H:i', strTotime($lead->contact_date))}}
+                    <p>{{ __('下一次跟进时间') }}: <span style="color:green;">{{date('d, F Y, H:i', strTotime($lead->contact_date))}}
 
                             @if($lead->status == 1) ({!! $lead->days_until_contact !!})<i
                                     class="glyphicon glyphicon-calendar" data-toggle="modal"
@@ -46,30 +48,35 @@
                     <!--Remove days left if lead is completed-->
                 @endif
                 @if($lead->status == 1)
-                    {{ __('Status') }}: {{ __('Contact') }}
+                    {{ __('状态') }}: <span class="label label-primary">{{ __('咨询中') }}</span>
                 @elseif($lead->status == 2)
-                    {{ __('Status') }}: {{ __('Completed') }}
+                    {{ __('状态') }}: <span class="label label-success">{{ __('完成咨询') }}</span>
                 @elseif($lead->status == 3)
-                    {{ __('Status') }}: {{ __('Not interested') }}
+                    {{ __('状态') }}: <span class="label label-warning">{{ __('无兴趣') }}</span>
                 @endif
 
+
             </div>
-            @if($lead->status == 1)
+
                 {!! Form::model($lead, [
                'method' => 'PATCH',
                 'url' => ['leads/updateassign', $lead->id],
                 ]) !!}
                 {!! Form::select('user_assigned_id', $users, null, ['class' => 'form-control ui search selection top right pointing search-select', 'id' => 'search-select']) !!}
-                {!! Form::submit(__('Assign new user'), ['class' => 'btn btn-primary form-control closebtn']) !!}
+                {!! Form::submit(__('更改所属顾问'), ['class' => 'btn btn-primary form-control closebtn']) !!}
                 {!! Form::close() !!}
+                </br>
                 {!! Form::model($lead, [
                'method' => 'PATCH',
                'url' => ['leads/updatestatus', $lead->id],
                ]) !!}
 
-                {!! Form::submit(__('Complete Lead'), ['class' => 'btn btn-success form-control closebtn movedown']) !!}
-                {!! Form::close() !!}
-            @endif
+                    {!! Form::select('status', array(
+                 '1' => '进行中', '2' => '已完成','3' => '无兴趣'), null, ['class' => 'form-control'] )
+              !!}
+                    {!! Form::submit(__('更改咨询状态'), ['class' => 'btn btn-success form-control closebtn']) !!}
+                    {!! Form::close() !!}
+
 
             <div class="activity-feed movedown">
                 @foreach($lead->activity as $activity)
@@ -84,6 +91,7 @@
         </div>
 
     </div>
+</div>
 
 
     <div class="modal fade" id="ModalFollowUp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -92,7 +100,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                 aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">{{ __('Change deadline') }}</h4>
+                    <h4 class="modal-title" id="myModalLabel">{{ __('更改跟进时间') }}</h4>
                 </div>
 
                 <div class="modal-body">
@@ -101,23 +109,23 @@
                       'method' => 'PATCH',
                       'route' => ['leads.followup', $lead->id],
                       ]) !!}
-                    {!! Form::label('contact_date', __('Next follow up'), ['class' => 'control-label']) !!}
+                    {!! Form::label('contact_date', __('下一次跟进时间'), ['class' => 'control-label']) !!}
                     {!! Form::date('contact_date', \Carbon\Carbon::now()->addDays(7), ['class' => 'form-control']) !!}
                     {!! Form::time('contact_time', '11:00', ['class' => 'form-control']) !!}
 
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default col-lg-6"
-                                data-dismiss="modal">{{ __('Close') }}</button>
+                                data-dismiss="modal">{{ __('关闭') }}</button>
                         <div class="col-lg-6">
-                            {!! Form::submit( __('Update follow up'), ['class' => 'btn btn-success form-control closebtn']) !!}
+                            {!! Form::submit( __('更新跟进时间'), ['class' => 'btn btn-success form-control closebtn']) !!}
                         </div>
                         {!! Form::close() !!}
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </div></div>
 @stop
        
 

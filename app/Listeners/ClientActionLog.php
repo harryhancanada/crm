@@ -32,13 +32,15 @@ class ClientActionLog
 
         switch ($event->getAction()) {
             case 'created':
-                $text = __('Client :company was assigned to :assignee', [
-                    'company' => $client->company_name,
+                $text = __('学生 < :client > 被 :username 建立并且分配给 :assignee', [
+                    'client' => $client-> name,
+                    'username' => Auth()->user()->name,
                     'assignee' => $client->AssignedUser->name,
                 ]);
                 break;
             case 'updated_assign':
-                $text =  __(':username assigned client to :assignee', [
+                $text =  __('学生 < :client > 被 :username 重新分配给 :assignee', [
+                    'client' => $client-> name,
                     'username' => Auth()->user()->name,
                     'assignee' => $client->AssignedUser->name,
                 ]);

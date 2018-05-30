@@ -64,25 +64,37 @@ class LeadActionNotification extends Notification
     {
         switch ($this->action) {
             case 'created':
-                $text = __(':title was created by :creator and assigned to you', [
+                $text = __('咨询 < :title > 由 :creator 建立并且分配给你。', [
                 'title' => $this->lead->title,
                 'creator' => $this->lead->creator->name
                 ]);
                 break;
             case 'updated_status':
-                $text = __(':title was completed by :username', [
+                switch($this->lead->status) {
+                    case '1':
+                        $status1='咨询中';
+                        break;
+                    case '2':
+                        $status1='已完成';
+                        break;
+                    case '3':
+                        $status1='无兴趣';
+                        break;
+                }
+                $text = __('咨询 < :title > 的状态被 :username 更改成 :status', [
                 'title' => $this->lead->title,
-                'username' =>  Auth()->user()->name
+                'username' =>  Auth()->user()->name,
+                'status'=> $status1
                 ]);
                 break;
             case 'updated_deadline':
-                $text = __(':username updated the deadline for this :title', [
+                $text = __(':username 更新了 < :title > 的下一次跟进时间', [
                 'title' => $this->lead->title,
                 'username' =>  Auth()->user()->name
                 ]);
                 break;
             case 'updated_assign':
-                $text = __(':username assigned a lead to you', [
+                $text = __(':username 给你分配了个新咨询。', [
                 'username' =>  Auth()->user()->name
                 ]);
                 break;

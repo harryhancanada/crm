@@ -1,51 +1,52 @@
+
 <div class="form-group">
-    {{ Form::label('image_path', __('Image'), ['class' => 'control-label']) }}
+    {{ Form::label('image_path', __('头像'), ['class' => 'control-label']) }}
     {!! Form::file('image_path',  null, ['class' => 'form-control']) !!}
 </div>
 
 
 <div class="form-group">
-    {!! Form::label('name', __('Name'), ['class' => 'control-label']) !!}
+    {!! Form::label('name', __('姓名'), ['class' => 'control-label']) !!}
     {!! Form::text('name', null, ['class' => 'form-control']) !!}
 </div>
 
 <div class="form-group">
-    {!! Form::label('email', __('Mail'), ['class' => 'control-label']) !!}
+    {!! Form::label('email', __('电子邮件'), ['class' => 'control-label']) !!}
     {!! Form::email('email', null, ['class' => 'form-control']) !!}
 </div>
 
 <div class="form-group">
-    {!! Form::label('address', __('Address'), ['class' => 'control-label']) !!}
+    {!! Form::label('address', __('地址'), ['class' => 'control-label']) !!}
     {!! Form::text('address', null, ['class' => 'form-control']) !!}
 </div>
 
 <div class="form-group">
-    {!! Form::label('work_number', __('Work number'), ['class' => 'control-label']) !!}
+    {!! Form::label('work_number', __('联系电话'), ['class' => 'control-label']) !!}
     {!! Form::text('work_number',  null, ['class' => 'form-control']) !!}
 </div>
 
 <div class="form-group">
-    {!! Form::label('personal_number', __('Personal number'), ['class' => 'control-label']) !!}
+    {!! Form::label('personal_number', __('备用电话'), ['class' => 'control-label']) !!}
     {!! Form::text('personal_number',  null, ['class' => 'form-control']) !!}
 </div>
 
 <div class="form-group">
-    {!! Form::label('password', __('Password'), ['class' => 'control-label']) !!}
+    {!! Form::label('password', __('密码'), ['class' => 'control-label']) !!}
     {!! Form::password('password', ['class' => 'form-control']) !!}
 </div>
 <div class="form-group">
-    {!! Form::label('password_confirmation', __('Confirm password'), ['class' => 'control-label']) !!}
+    {!! Form::label('password_confirmation', __('确认密码'), ['class' => 'control-label']) !!}
     {!! Form::password('password_confirmation', ['class' => 'form-control']) !!}
 </div>
 <div class="form-group form-inline">
-    {!! Form::label('roles', __('Assign role'), ['class' => 'control-label']) !!}
+    {!! Form::label('roles', __('权限'), ['class' => 'control-label']) !!}
     {!!
         Form::select('roles',
         $roles,
         isset($user->role->role_id) ? $user->role->role_id : null,
         ['class' => 'form-control']) !!}
 
-    {!! Form::label('departments', __('Assign department'), ['class' => 'control-label']) !!}
+    {!! Form::label('departments', __('设置部门'), ['class' => 'control-label']) !!}
 
     {!!
         Form::select('departments',

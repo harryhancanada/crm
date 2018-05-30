@@ -97,6 +97,6 @@ class User extends Authenticatable
     public function getAvatarattribute()
     {
         $setting = Setting::first();
-        return $this->image_path ? 'images/' . $setting->company . '/' . $this->image_path : 'images/default_avatar.jpg';
+        return $this->image_path ? 'images/' . $setting->company . '/' . $this->image_path : 'http://'.$_SERVER['HTTP_HOST'].'/crm/public/images/default-avatar.png';
     }
 }

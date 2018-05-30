@@ -38,7 +38,7 @@ class ClientsController extends Controller
      */
     public function index()
     {
-        return view('clients.index');
+        return view('clients.index')->withUsers($this->users);
     }
 
     /**
@@ -47,17 +47,33 @@ class ClientsController extends Controller
      */
     public function anyData()
     {
-        $clients = Client::select(['id', 'name', 'company_name', 'email', 'primary_number']);
+        //**check if has right to see all clients**//
+        if ((!auth()->user()->hasRole('administrator'))&(!auth()->user()->hasRole('manager'))){
+            $user_id=auth()->user()->id;
+            $clients=Client::select(['id', 'name', 'company_name', 'email', 'primary_number','industry_id','vat','user_id'])->where('user_id',$user_id);
+        }
+        else $clients = Client::select(['id', 'name', 'company_name', 'email', 'primary_number','industry_id','vat','user_id']);
+
         return Datatables::of($clients)
             ->addColumn('namelink', function ($clients) {
                 return '<a href="clients/' . $clients->id . '" ">' . $clients->name . '</a>';
             })
+            ->addColumn('user_id', function ($clients) {
+                    return '<a href="users/' . $clients->user_id . '" ">' .$clients->user->name . '</a>';
+  
+            })
+            ->addColumn('industry', function ($clients) {
+            
+                $industry_id = $clients->industry_id;
+                return $this->clients->getIndustries($industry_id);
+            })
+
             ->add_column('edit', '
                 <a href="{{ route(\'clients.edit\', $id) }}" class="btn btn-success" >Edit</a>')
             ->add_column('delete', '
                 <form action="{{ route(\'clients.destroy\', $id) }}" method="POST">
             <input type="hidden" name="_method" value="DELETE">
-            <input type="submit" name="submit" value="Delete" class="btn btn-danger" onClick="return confirm(\'Are you sure?\')"">
+            <input type="submit" name="submit" value="Delete" class="btn btn-danger" onClick="return confirm(\'你确定要删除此学生吗（无法恢复）?\')"">
 
             {{csrf_field()}}
             </form>')
@@ -133,7 +149,7 @@ class ClientsController extends Controller
     public function update($id, UpdateClientRequest $request)
     {
         $this->clients->update($id, $request);
-        Session()->flash('flash_message', 'Client successfully updated');
+        Session()->flash('flash_message', '成功更新学生信息');
         return redirect()->route('clients.index');
     }
 
@@ -156,8 +172,10 @@ class ClientsController extends Controller
     public function updateAssign($id, Request $request)
     {
         $this->clients->updateAssign($id, $request);
-        Session()->flash('flash_message', 'New user is assigned');
+        Session()->flash('flash_message', '所负责顾问已更改');
         return redirect()->back();
     }
+    
+       
 
 }

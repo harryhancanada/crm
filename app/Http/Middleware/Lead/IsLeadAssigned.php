@@ -25,7 +25,7 @@ class IsLeadAssigned
             return $next($request);
         }
         if ($settingscomplete == 1  && Auth()->user()->id == $lead->fk_user_id_assign) {
-            Session()->flash('flash_message_warning', 'Not allowed to create lead');
+            Session()->flash('flash_message_warning', '您没有权限');
             return redirect()->back();
         }
         return $next($request);

@@ -1,16 +1,19 @@
 <div id="task" class="tab-pane fade in active">
     <div class="boxspace">
         <table class="table table-hover">
-            <h4>{{ __('All Tasks') }}</h4>
+            <h4>{{ __('所有申请') }}</h4>
             <thead>
             <thead>
             <tr>
-                <th>{{ __('Title') }}</th>
-                <th>{{ __('Assigned') }}</th>
-                <th>{{ __('Created at') }}</th>
-                <th>{{ __('Deadline') }}</th>
+            <th>{{ __('申请名称') }}</th>
+            <th>{{ __('所属顾问') }}</th>
+            <th>{{ __('建立时间') }}</th>
+            <th>{{ __('截止时间') }}</th>
+            <th>{{ __('申请状态') }}</th>
+            <th>{{ __('操作选项') }}</th>
+            <th>{{ __('') }}</th>
                 <th><a href="{{ route('tasks.create', ['client' => $client->id])}}">
-                        <button class="btn btn-success">{{ __('New task') }}</button>
+                        <button class="btn btn-success">{{ __('新建申请') }}</button>
                     </a></th>
 
             </tr>
@@ -53,7 +56,33 @@
                     <td>{{date('d, M Y, H:i', strTotime($task->created_at))}}  </td>
                     <td>{{date('d, M Y', strTotime($task->deadline))}}
                         @if($task->status == 1)({{ $task->days_until_deadline }}) @endif</td>
-                    <td></td>
+                    <td>
+                @if($task->status == 1)
+                     <span class="label label-primary">{{ __('进行中') }}</span>
+                @endif
+
+                @if($task->status == 2)
+                     <span class="label label-success">{{ __('已完成') }}</span>
+                @endif
+
+                @if($task->status == 3)
+                    <span class="label label-danger">{{ __('无效') }}</span>
+                @endif
+
+                @if($task->status == 4)
+                    <span class="label label-warning">{{ __('暂停') }}</span>
+                @endif
+                        
+                    </td>
+                    <td><a href="{{route("tasks.show", $task->id) }}" class="btn btn-success"> Edit</a></td>
+                    
+                    <td><form action="{{ route('tasks.destroy', $task->id)}}" method="POST">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="submit" name="submit" value="Delete" class="btn btn-danger" onClick="return confirm('你确定要删除该条申请吗（不可恢复）？')" />
+
+            {{csrf_field()}}
+            </form></td>
+            <td></td>
                 </tr>
 
             @endforeach

@@ -1,16 +1,23 @@
 @extends('layouts.master')
 @section('heading')
-    <h1>{{ __('All users') }}</h1>
+    <div class="panel panel-primary shadow  " >
+        <div class="panel-heading">
+
+    <h1>{{ __('顾问管理') }}</h1>
+        </div>
+
 @stop
 
+
 @section('content')
+            <div class="panel-body">
     <table class="table table-hover" id="users-table">
         <thead>
         <tr>
-            <th>{{ __('Name') }}</th>
-            <th>{{ __('Mail') }}</th>
-            <th>{{ __('Work number') }}</th>
-            <th></th>
+            <th>{{ __('姓名') }}</th>
+            <th>{{ __('电子邮件') }}</th>
+            <th>{{ __('联系电话') }}</th>
+            <th>{{ __('操作选项') }}</th>
             <th></th>
         </tr>
         </thead>
@@ -92,7 +99,7 @@
       
     </div>
   </div> 
-
+        </div></div>
 @stop
 
 @push('scripts')

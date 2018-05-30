@@ -6,7 +6,7 @@
         <div class="col-md-8">
             <div class="panel panel-default">
                 <div class="panel-heading panel-header">
-                    <h3 class="text-center"><strong>{{ __('Order summary') }}</strong></h3>
+                    <h3 class="text-center"><strong>{{ __('进度及收费管理') }}</strong></h3>
                 </div>
                 <div class="panel-body">
                     <div class="table-responsive">
@@ -14,22 +14,22 @@
                             <thead>
 
                             <tr>
-                                <td><strong>{{ __('Item name') }}</strong></td>
-                                <td class="text-center"><strong>{{ __('Item price') }}</strong></td>
-                                <td class="text-center"><strong>{{ __('Hours used') }}</strong></td>
-                                <td class="text-right"><strong>{{ __('Total') }}</strong></td>
+                                <td><strong>{{ __('进度说明') }}</strong></td>
+                                <td class="text-center"><strong>{{ __('收费记录/CAD') }}</strong></td>
+                                <td class="text-center"><strong>{{ __('所花时间/小时') }}</strong></td>
+                               
                             </tr>
 
                             </thead>
                             <tbody>
                             <?php $finalPrice = 0;?>
                             @foreach($invoice->invoiceLines as $item)
-                                <?php $totalPrice = $item->quantity * $item->price ?>
+                                <?php $totalPrice =  $item->price ?>
                                 <tr>
                                     <td>{{$item->title}}</td>
-                                    <td class="text-center">{{$item->price}},-</td>
-                                    <td class="text-center">{{$item->quantity}}</td>
-                                    <td class="text-right">{{$totalPrice}},-</td>
+                                    <td class="text-center">$ {{$item->price}}</td>
+                                    <td class="text-center">{{$item->quantity}}小时</td>
+                                    
                                 </tr>
                                 <?php $finalPrice += $totalPrice;?>
                             @endforeach
@@ -37,8 +37,8 @@
                             <tr>
                                 <td class="emptyrow"></i></td>
                                 <td class="emptyrow"></td>
-                                <td class="emptyrow text-center"><strong>{{ __('Total') }}</strong></td>
-                                <td class="emptyrow text-right">{{$finalPrice}},-</td>
+                                <td class="emptyrow text-center"><strong>{{ __('总计') }}</strong></td>
+                                <td class="emptyrow text-right">CAD$  {{$finalPrice}}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -48,7 +48,7 @@
             @if(!$invoice->sent_at)
                 <button type="button" class="btn btn-primary form-control" data-toggle="modal"
                         data-target="#ModalTimer">
-                        {{ __('Insert new item') }}
+                        {{ __('新增进度') }}
                     
                 </button>
             @endif
@@ -57,10 +57,10 @@
         <div class="col-md-4">
             <div class="sidebarbox">
                 <div class="sidebarheader">
-                    <p>Invoice information</p>
+                    <p>收费信息管理</p>
                 </div>
-                {{ __('Invoice sent') }}: {{$invoice->sent_at ? __('yes') : __('no') }} <br/>
-                {{ __('Payment Received') }}: {{$invoice->payment_received_at ? __('yes') : __('no') }} <br/>
+                {{ __('完成进度') }}: {{$invoice->sent_at ? __('已完成') : __('未完成') }} <br/>
+                {{ __('收到所有费用') }}: {{$invoice->payment_received_at ? __('已收到') : __('未收到') }} <br/>
 
 
                 @if($invoice->payment_received_at)
@@ -69,7 +69,7 @@
                 <br/><br/>
 @if(!$invoice->sent_at)
             <button type="button" class="btn btn-success form-control closebtn" value="add_time_modal" data-toggle="modal" data-target="#SendInvoiceModalConfirm" >
-                {{ __('Set invoice as sent') }}
+                {{ __('所有进度完成') }}
             </button>
 
                 </div>
@@ -82,9 +82,9 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">
-                {{ __('Are you sure?') }}
+                {{ __('你确定吗?') }}
                     </h4>
-                    <p>{{ __('Once a invoice has been send, no new invoice lines can be added') }}</p>
+                    <p>{{ __('完成所有进度后将不能添加新的进度') }}</p>
                  {!! Form::open([
                     'method' => 'post',
                     'route' => ['invoice.sent', $invoice->id],
@@ -112,7 +112,7 @@
 
         @if(!$invoice->payment_received_at)
                 <div class="sidebarheader">
-                    <p>{{ __('Invoice paid date') }}</p>
+                    <p>{{ __('最终日期') }}</p>
                 </div>
                 {!! Form::open([
                 'method' => 'post',
@@ -121,7 +121,7 @@
 
                 {!! Form::date('payment_date', \Carbon\Carbon::now(), ['class' => 'form-control']) !!}
 
-                {!! Form::submit('Set invoice as paid', ['class' => 'btn btn-success form-control closebtn']) !!}
+                {!! Form::submit('此次申请所有费用已交', ['class' => 'btn btn-success form-control closebtn']) !!}
         </div>
         {!! Form::close() !!}
         @else
@@ -129,7 +129,7 @@
              'method' => 'post',
              'route' => ['invoice.payment.reopen', $invoice->id],
              ]) !!}
-            {!! Form::submit('Set invoice as not paid', ['class' => 'btn btn-danger form-control closebtn']) !!}
+            {!! Form::submit('还有费用未付', ['class' => 'btn btn-danger form-control closebtn']) !!}
             {!! Form::close() !!}
         @endif
         @endif

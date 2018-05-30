@@ -83,7 +83,7 @@ class TaskRepository implements TaskRepositoryContract
     {
         $task = Task::findOrFail($id);
         $input = $requestData->get('status');
-        $input = array_replace($requestData->all(), ['status' => 2]);
+        $input = array_replace($requestData->all());
         $task->fill($input)->save();
         event(new \App\Events\TaskAction($task, self::UPDATED_STATUS));
     }
@@ -216,9 +216,16 @@ class TaskRepository implements TaskRepositoryContract
      */
     public function completedTasksThisMonth()
     {
-        return DB::table('tasks')
-            ->select(DB::raw('count(*) as total, updated_at'))
-            ->where('status', 2)
+    return DB::table('tasks')
+        ->select(DB::raw('count(*) as total, updated_at'))
+        ->where('status', 2)
+        ->whereBetween('updated_at', [Carbon::now()->startOfMonth(), Carbon::now()])->get();
+    }
+
+    public function incomeThisMonth()
+    {
+        return DB::table('invoice_lines')
+            ->select(DB::raw('SUM(price)'))
             ->whereBetween('updated_at', [Carbon::now()->startOfMonth(), Carbon::now()])->get();
     }
 
@@ -244,7 +251,25 @@ class TaskRepository implements TaskRepositoryContract
 
         $closed_tasks = Task::where('status', 2)
         ->where('user_assigned_id', $id)->count();
+        
+        $abandoned_tasks = Task::where('status', 3)
+        ->where('user_assigned_id', $id)->count();
+        
+        $paused_tasks = Task::where('status', 4)
+        ->where('user_assigned_id', $id)->count();
 
-        return collect([$closed_tasks, $open_tasks]);
+        $other_tasks=$paused_tasks+$abandoned_tasks;
+        return collect([$closed_tasks, $open_tasks,$other_tasks]);
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $task = Task::findorFail($id);
+            $task->delete();
+            Session()->flash('flash_message', '申请成功彻底删除');
+        } catch (\Illuminate\Database\QueryException $e) {
+            Session()->flash('flash_message_warning', '');
+        }
     }
 }

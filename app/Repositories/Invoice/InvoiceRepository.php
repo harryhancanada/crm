@@ -61,7 +61,7 @@ class InvoiceRepository implements InvoiceRepositoryContract
             $api->sendInvoice($bookGuid, $bookTime);
 
             Activity::create([
-                'text' => "user has created, and send the invoice to the customer",
+                'text' => "顾问已完成申请所有步骤",
                 'user_id' => Auth()->id(),
                 'source_type' => Invoice::class,
                 'source_id' =>  $invoice->id,
@@ -102,7 +102,7 @@ class InvoiceRepository implements InvoiceRepositoryContract
         $invoice = invoice::findOrFail($id);
 
         if (!$invoice->canUpdateInvoice()) {
-            return Session::flash('flash_message_warning', __("Can't insert new invoice line, to already sent invoice"));
+            return Session::flash('flash_message_warning', __("该申请已完成，不能再添加新的进度。"));
         }
       
         InvoiceLine::create([

@@ -53,7 +53,7 @@ class LeadRepository implements LeadRepositoryContract
 
         $lead = Lead::create($input);
         $insertedId = $lead->id;
-        Session()->flash('flash_message', 'Lead successfully added!');
+        Session()->flash('flash_message', '建立新咨询成功!');
 
         event(new \App\Events\LeadAction($lead, self::CREATED));
 
@@ -69,7 +69,7 @@ class LeadRepository implements LeadRepositoryContract
         $lead = Lead::findOrFail($id);
 
         $input = $requestData->get('status');
-        $input = array_replace($requestData->all(), ['status' => 2]);
+        $input = array_replace($requestData->all());
         $lead->fill($input)->save();
         event(new \App\Events\LeadAction($lead, self::UPDATED_STATUS));
     }
@@ -202,7 +202,21 @@ class LeadRepository implements LeadRepositoryContract
 
         $closed_leads = Lead::where('status', 2)
         ->where('user_assigned_id', $id)->count();
+        
+        $other_leads = Lead::where('status', 3)
+        ->where('user_assigned_id', $id)->count();
 
-        return collect([$closed_leads, $open_leads]);
+        return collect([$closed_leads, $open_leads,$other_leads]);
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $lead = Lead::findorFail($id);
+            $lead->delete();
+            Session()->flash('flash_message', '申请成功彻底删除');
+        } catch (\Illuminate\Database\QueryException $e) {
+            Session()->flash('flash_message_warning', '');
+        }
     }
 }

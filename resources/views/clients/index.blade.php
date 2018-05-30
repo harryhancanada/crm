@@ -4,15 +4,21 @@
 @stop
 
 @section('content')
-
+    <div class="panel panel-primary shadow  " >
+        <div class="panel-heading">
+            <h1>学生管理</h1>
+        </div></div>
     <table class="table table-hover " id="clients-table">
         <thead>
         <tr>
-            <th>{{ __('Name') }}</th>
-            <th>{{ __('Company') }}</th>
-            <th>{{ __('Mail') }}</th>
-            <th>{{ __('Number') }}</th>
-            <th></th>
+            <th>{{ __('姓名') }}</th>
+            <th>{{ __('所属顾问') }}</th>
+            <th>{{ __('所属类型') }}</th>
+            <th>{{ __('所在学校') }}</th>
+            <th>{{ __('微信号码') }}</th>
+            <th>{{ __('电子邮件') }}</th>
+            <th>{{ __('联系电话') }}</th>
+            <th>{{ __('操作选项') }}</th>
             <th></th>
         </tr>
         </thead>
@@ -31,7 +37,10 @@
             columns: [
 
                 {data: 'namelink', name: 'name'},
+                {data: 'user_id', name: 'user_id'},
+                {data: 'industry', name: 'industry'},
                 {data: 'company_name', name: 'company_name'},
+                {data: 'vat', name: 'vat'},
                 {data: 'email', name: 'email'},
                 {data: 'primary_number', name: 'primary_number'},
                 @if(Entrust::can('client-update'))   

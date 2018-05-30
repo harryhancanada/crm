@@ -97,7 +97,22 @@ class UsersController extends Controller
                     ->format('d/m/Y') : '';
             })
             ->editColumn('status', function ($tasks) {
-                return $tasks->status == 1 ? '<span class="label label-success">Open</span>' : '<span class="label label-danger">Closed</span>';
+                switch ($tasks->status){
+                    case '1':
+                        return '<span class="label label-primary">进行中</span>';
+                        break;
+                    case '2':
+                        return '<span class="label label-success">已完成</span>';
+                        break;
+                    case '3':
+                        return '<span class="label label-danger">无效</span>';
+                        break;
+                    case '4':
+                        return '<span class="label label-warning">暂停中</span>';
+                        break;
+
+                }
+
             })
             ->editColumn('client_id', function ($tasks) {
                 return $tasks->client->name;
@@ -129,7 +144,18 @@ class UsersController extends Controller
                     ->format('d/m/Y') : '';
             })
             ->editColumn('status', function ($leads) {
-                return $leads->status == 1 ? '<span class="label label-success">Open</span>' : '<span class="label label-danger">Closed</span>';
+                switch ($leads->status){
+                    case '1':
+                        return '<span class="label label-primary">咨询中</span>';
+                        break;
+                    case '2':
+                        return '<span class="label label-success">已完成</span>';
+                        break;
+                    case '3':
+                        return '<span class="label label-danger">无兴趣</span>';
+                        break;
+                }
+
             })
             ->editColumn('client_id', function ($tasks) {
                 return $tasks->client->name;
@@ -186,11 +212,19 @@ class UsersController extends Controller
      */
     public function show($id)
     {
+        if(User::find($id)){
         return view('users.show')
             ->withUser($this->users->find($id))
             ->withCompanyname($this->settings->getCompanyName())
             ->withTaskStatistics($this->tasks->totalOpenAndClosedTasks($id))
             ->withLeadStatistics($this->leads->totalOpenAndClosedLeads($id));
+        }
+        else 
+        {
+            Session()->flash('flash_message_warning', '该顾问不存在或已删除');
+            return redirect()->back();
+        
+        }
     }
 
     /**
@@ -213,7 +247,7 @@ class UsersController extends Controller
     public function update($id, UpdateUserRequest $request)
     {
         $this->users->update($id, $request);
-        Session()->flash('flash_message', 'User successfully updated');
+        Session()->flash('flash_message', '成功更新顾问信息');
         return redirect()->back();
     }
 

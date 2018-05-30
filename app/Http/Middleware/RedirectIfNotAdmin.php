@@ -16,7 +16,7 @@ class RedirectIfNotAdmin
     public function handle($request, Closure $next)
     {
         if (!auth()->user()->hasRole('administrator')) {
-            Session()->flash('flash_message_warning', 'Only Allowed for admins');
+            Session()->flash('flash_message_warning', '您不是管理员，无权查看此页。');
             return redirect()->back();
         }
         return $next($request);

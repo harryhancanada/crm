@@ -54,7 +54,7 @@
                      @if($user->image_path != "")
                      src="images/{{$companyname}}/{{$user->image_path}}"
                      @else
-                     src="images/default_avatar.jpg"
+                     src="images/default-avatar.png"
                         @endif />
             </a>
         </div>

@@ -46,6 +46,7 @@ Route::group(['middleware' => ['auth']], function () {
     });
         Route::resource('clients', 'ClientsController');
 	    Route::resource('documents', 'DocumentsController');
+    Route::resource('comments', 'CommentController');
 	
       
     /**
@@ -70,6 +71,7 @@ Route::group(['middleware' => ['auth']], function () {
     });
         Route::resource('leads', 'LeadsController');
         Route::post('/comments/{type}/{id}', 'CommentController@store');
+
     /**
      * Settings
      */

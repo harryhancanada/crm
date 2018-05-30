@@ -14,7 +14,7 @@
             'enctype' => 'multipart/form-data'
             ]) !!}
 
-    @include('users.form', ['submitButtonText' =>  __('Update user')])
+    @include('users.form', ['submitButtonText' =>  __('更新')])
 
     {!! Form::close() !!}
 

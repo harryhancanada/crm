@@ -1,6 +1,7 @@
 @extends('layouts.master')
 @section('heading')
-    Edit Client ({{$client->name}})
+        <div class="panel panel-primary shadow  " >
+            <div class="panel-heading"> <h1>编辑学生信息({{$client->name}})</h1></div></div>
 @stop
 
 @section('content')
@@ -8,7 +9,7 @@
             'method' => 'PATCH',
             'route' => ['clients.update', $client->id],
             ]) !!}
-    @include('clients.form', ['submitButtonText' => __('Update client')])
+    @include('clients.form', ['submitButtonText' => __('更新')])
 
     {!! Form::close() !!}
 

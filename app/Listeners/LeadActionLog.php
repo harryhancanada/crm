@@ -30,24 +30,37 @@ class LeadActionLog
     {
         switch ($event->getAction()) {
             case 'created':
-                $text = __(':title was created by :creator and assigned to :assignee', [
+                $text = __(':title 由 :creator 建立被分配给 :assignee', [
                     'title' => $event->getLead()->title,
                     'creator' => $event->getLead()->creator->name,
                     'assignee' => $event->getLead()->user->name
                 ]);
                 break;
             case 'updated_status':
-                $text = __('Lead was completed by :username', [
+                switch($event->getLead()->status) {
+                    case '1':
+                        $status1='进行中';
+                        break;
+                    case '2':
+                        $status1='已完成';
+                        break;
+                    case '3':
+                        $status1='无兴趣';
+                        break;
+                }
+
+                $text = __('此咨询已被 :username 更改状态为 < :status >', [
                     'username' => Auth()->user()->name,
+                    'status' => $status1
                 ]);
                 break;
             case 'updated_deadline':
-                $text = __(':username updated the deadline for this lead', [
+                $text = __(':username 更新了此咨询的下一次跟进时间', [
                     'username' => Auth()->user()->name,
                 ]);
                 break;
             case 'updated_assign':
-                $text = __(':username assigned lead to :assignee', [
+                $text = __(':username 将此咨询重新分配给 :assignee', [
                     'username' => Auth()->user()->name,
                     'assignee' => $event->getLead()->user->name
                 ]);
